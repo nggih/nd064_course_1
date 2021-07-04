@@ -1,16 +1,17 @@
-FROM python:2.7
+FROM python:3.8
 
 LABEL maintainer="Linggih Saputro"
 
 # copy files in the current directory to /app directory in the container
-COPY /techtrends /app
+COPY . /app
 
 # defines the working directory within the container
 WORKDIR /app
 
 RUN pip install -r requirements.txt
+RUN python init_db.py
 
-CMD ["python", "init_db.py", "&&", "python", "app.py"]
+CMD ["python", "app.py"]
 
 # to build use using the Dockerfile from the current directory
 # docker build -t python-helloWorld .
