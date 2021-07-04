@@ -3,7 +3,7 @@ FROM python:3.8
 LABEL maintainer="Linggih Saputro"
 
 # copy files in the current directory to /app directory in the container
-COPY . /app
+COPY /techtrends /app
 
 # defines the working directory within the container
 WORKDIR /app
