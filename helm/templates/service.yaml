@@ -5,21 +5,26 @@ kind: Service
 ## Set the parameters that make the object identifiable, such as its name, namespace, and labels.
 metadata:
   labels:
-    app: techtrends 
-  name: techtrends 
-  namespace: sandbox 
+    app: {{ .Values.AppName }} 
+  name: {{ .Values.AppName }} 
+  namespace: {{ .Values.namespace.name }} 
 ## Define the desired configuration for the Service resource.
 spec:
   ## Define the ports that the service should serve on. 
   ## For example, the service is exposed on port 8111, and
   ## directs the traffic to the pods on port 6112, using TCP.
   ports:
-  - port: 4111
-    protocol: TCP
-    targetPort: 3111
+  - port: {{ .Values.service.port }} 
+    protocol: {{ .Values.service.protocol }} 
+    {{ if .Values.service.targetPort }}
+      targetPort: {{ .Values.service.targetPort }}
+    {{ else }}
+      targetPort: {{ .Values.service.port }}
+    {{ end }}
+    
   ## Identify the pods managed by this Service using the following selectors.
   ## In this case, all pods with the label `go-helloworld`.
   selector:
-    app: techtrends 
+    app: {{ .Values.AppName }} 
   ## Define the Service type, here set to ClusterIP.
-  type: ClusterIP
+  type: {{ .Values.service.type }} 
