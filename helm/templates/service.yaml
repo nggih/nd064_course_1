@@ -16,11 +16,7 @@ spec:
   ports:
   - port: {{ .Values.service.port }} 
     protocol: {{ .Values.service.protocol }} 
-    {{ if .Values.service.targetPort }}
-      targetPort: {{ .Values.service.targetPort }}
-    {{ else }}
-      targetPort: {{ .Values.service.port }}
-    {{ end }}
+    {{ if .Values.service.targetPort }}targetPort: {{ default .Values.service.targetPort .Values.service.port }}{{ end }}
     
   ## Identify the pods managed by this Service using the following selectors.
   ## In this case, all pods with the label `go-helloworld`.
