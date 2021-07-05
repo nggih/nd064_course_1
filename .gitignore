@@ -1,0 +1,7 @@
+__pycache__
+
+.vagrant/
+
+*.log
+*.db
+
