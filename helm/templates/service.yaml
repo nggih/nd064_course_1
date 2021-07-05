@@ -5,8 +5,8 @@ kind: Service
 ## Set the parameters that make the object identifiable, such as its name, namespace, and labels.
 metadata:
   labels:
-    app: {{ .Values.AppName }} 
-  name: {{ .Values.AppName }} 
+    app: {{ .Values.appName }} 
+  name: {{ .Values.appName }} 
   namespace: {{ .Values.namespace.name }} 
 ## Define the desired configuration for the Service resource.
 spec:
@@ -25,6 +25,6 @@ spec:
   ## Identify the pods managed by this Service using the following selectors.
   ## In this case, all pods with the label `go-helloworld`.
   selector:
-    app: {{ .Values.AppName }} 
+    app: {{ .Values.appName }} 
   ## Define the Service type, here set to ClusterIP.
   type: {{ .Values.service.type }} 

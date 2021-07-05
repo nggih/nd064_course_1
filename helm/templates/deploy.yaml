@@ -6,8 +6,8 @@ kind: Deployment
 metadata:
   annotations:
   labels:
-    app: {{ .Values.AppName }} 
-  name: {{ .Values.AppName }} 
+    app: {{ .Values.appName }} 
+  name: {{ .Values.appName }} 
   namespace: {{ .Values.namespace.name }} 
 ## Define the desired configuration for the Deployment resource.
 spec:
@@ -18,7 +18,7 @@ spec:
   ## In this case, all pods with the label `go-helloworld`.
   selector:
     matchLabels:
-      app: {{ .Values.AppName }} 
+      app: {{ .Values.appName }} 
   ## Set the RollingOut strategy for the Deployment.
   ## For example, roll out only 25% of the new pods at a time.
   strategy:
@@ -32,7 +32,7 @@ spec:
     ## For example, all pods should have the label `go-helloworld`
     metadata:
       labels:
-        app: {{ .Values.AppName }} 
+        app: {{ .Values.appName }} 
     ## Define the desired state of the pod configuration.
     spec:
       containers:
@@ -41,7 +41,7 @@ spec:
         ## only pull the image if it's not available on the current host.
       - image: nggih/{{ .Values.image.repository }}:{{ .Values.image.tag }}
         imagePullPolicy: {{ .Values.image.pullPolicy }} 
-        name: {{ .Values.AppName }} 
+        name: {{ .Values.appName }} 
         ## Expose the port the container is listening on.
         ## For example, exposing the application port 6112 via TCP.
         ports:
