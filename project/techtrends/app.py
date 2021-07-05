@@ -1,14 +1,24 @@
 import sqlite3
 import logging
+import sys
 
 from flask import Flask, jsonify, json, render_template, request, url_for, redirect, flash
 from werkzeug.exceptions import abort
 
+db_connection_count = 0
 # Function to get a database connection.
 # This function connects to database with the name `database.db`
 def get_db_connection():
-    connection = sqlite3.connect('database.db')
-    connection.row_factory = sqlite3.Row
+    # from the first feedback implementation suggestions
+    global db_connection_count
+    try: 
+        db_connection_count += 1
+        connection = sqlite3.connect('database.db')
+        connection.row_factory = sqlite3.Row
+    except Exception as err:
+        res = {"result": "Error: %r " % (str(err) )}
+        app.logger.warning(res)
+        return jsonify(res), 500
     return connection
 
 # Function to get a post using its ID
@@ -37,11 +47,11 @@ def index():
 def post(post_id):
     post = get_post(post_id)
     if post is None:
-        app.logger.info(f'Article id does not exist: {post_id}')
+        app.logger.info('Article id does not exist: %s' % (post_id))
         return render_template('404.html'), 404
     else:
         title = post[2]
-        app.logger.info(f'Existing article is retrieved: {title}')
+        app.logger.info('Existing article is retrieved: %s' % (title))
         return render_template('post.html', post=post)
 
 # Define the About Us page
@@ -65,7 +75,7 @@ def create():
                          (title, content))
             connection.commit()
             connection.close()
-            app.logger.info(f'New article is created: {title}')
+            app.logger.info('New article is created: %s' % (title))
             return redirect(url_for('index'))
 
     return render_template('create.html')
@@ -94,12 +104,11 @@ def metrics():
     # check total posts
     posts = connection.execute('SELECT * FROM posts').fetchall()
     # count the query or any connections using trace callback
-    db_connection_counts = len([connection.set_trace_callback(print)]) 
     response = app.response_class(
         response=json.dumps({
             "status": "success",
             "data": {
-                "db_connection_count": db_connection_counts,
+                "db_connection_count": db_connection_count,
                 "post_count": len(posts),
             }
         }),
@@ -112,5 +121,11 @@ def metrics():
 
 # start the application on port 3111
 if __name__ == "__main__":
-    logging.basicConfig(filename='app.log', level=logging.DEBUG)
+    # set logger to handle STDOUT and STDERR
+    stdout_handler = sys.stdout  # stdout handler `
+    stderr_handler = sys.stderr # stderr handler
+    handlers = [stderr_handler, stdout_handler]
+    # format output
+    format_output = '%(asctime)s %(levelname)s %(message)s'# formating output here
+    logging.basicConfig(format=format_output, level=logging.DEBUG, handlers=handlers)
     app.run(host='0.0.0.0', port='3111')
